@@ -330,6 +330,13 @@ def deploy(package, path, shim="binary", as_bundle=False):
 
             shutil.copyfile(src, dst)
 
+        if os.path.isdir(os.path.join(root, 'python', 'google')):
+
+            init_script_path = os.path.join(root, 'python', 'google', '__init__.py')
+
+            with open(init_script_path, 'w') as f:
+                f.write("__path__ = __import__('pkgutil').extend_path(__path__, __name__)")
+
         console_scripts = find_console_scripts(distribution)
 
         if not console_scripts:
@@ -706,7 +713,7 @@ def call(command, **kwargs):
 
 
 def _rez_name(pip_name):
-    return pip_name.replace("-", "_")
+    return pip_name.replace("-", "_").lower()
 
 
 def _pip_to_rez_requirements(distribution):
